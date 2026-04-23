@@ -29,8 +29,6 @@ resource "aws_ecs_task_definition" "taskoverflow" {
       {
         "name": "SQLALCHEMY_DATABASE_URI",
         "value": "postgresql://${local.database_username}:${local.database_password}@${aws_db_instance.taskoverflow_database.address}:${aws_db_instance.taskoverflow_database.port}/${aws_db_instance.taskoverflow_database.db_name}"
-# The following to use psycopg v3.
-#        "value": "postgresql+psycopg://${local.database_username}:${local.database_password}@${aws_db_instance.taskoverflow_database.address}:${aws_db_instance.taskoverflow_database.port}/${aws_db_instance.taskoverflow_database.db_name}"
       }
     ],
     "logConfiguration": {
@@ -55,9 +53,9 @@ resource "aws_ecs_service" "taskoverflow" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets             = data.aws_subnets.private.ids
-    security_groups     = [aws_security_group.taskoverflow.id]
-    assign_public_ip    = true
+    subnets          = data.aws_subnets.private.ids
+    security_groups  = [aws_security_group.taskoverflow.id]
+    assign_public_ip = true
   }
 
   load_balancer {
@@ -68,27 +66,27 @@ resource "aws_ecs_service" "taskoverflow" {
 }
 
 resource "aws_security_group" "taskoverflow" {
-  name = "taskoverflow"
+  name        = "taskoverflow"
   description = "TaskOverflow Security Group"
 
   ingress {
-    from_port = 6400
-    to_port = 6400
-    protocol = "tcp"
+    from_port   = 6400
+    to_port     = 6400
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
